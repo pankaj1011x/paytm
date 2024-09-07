@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import z from "zod";
 
 export const signupSchema = z.object({

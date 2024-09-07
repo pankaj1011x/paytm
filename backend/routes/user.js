@@ -1,8 +1,9 @@
 import express from "express";
-import { signupSchema } from "./types";
-import { signinSchema } from "./types";
-import { updateSchema } from "./types";
+import { signupSchema } from "../types.js";
+import { signinSchema } from "../types.js";
+import { updateSchema } from "../types.js";
 import { authMiddlware } from "../middleware.js";
+import { Account } from "../db";
 import { User } from "../db";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -37,8 +38,12 @@ router.post("/signup", async (req, res) => {
       lastName: payload.lastName,
       password: payload.password,
     });
-
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET);
+    const userId = user._id;
+    await Account.create({
+      userId,
+      balance: 1 + Math.random() * 10000,
+    });
+    const token = jwt.sign({ userId }, JWT_SECRET);
 
     res.json({ msg: "User created successfully", token });
   } catch (error) {
