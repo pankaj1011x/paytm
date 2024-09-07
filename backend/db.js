@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-const bcrypt = require("bcrypt");
+import bcrypt from "bcrypt";
 dotenv.config();
 
 const url = process.env.MONGODB_URL;

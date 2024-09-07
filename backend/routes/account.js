@@ -1,10 +1,10 @@
 import express from "express";
-import { authMiddleware } from "../middleware";
-import { Account } from "../db";
+import { authMiddleware } from "../middleware.js";
+import { Account } from "../db.js";
 import mongoose from "mongoose";
-export const router = express.Router();
+export const accountRouter = express.Router();
 
-router.get("/balance", authMiddleware, async (req, res) => {
+accountRouter.get("/balance", authMiddleware, async (req, res) => {
   const account = await Account.findOne({
     userId: req.userId,
   });
@@ -14,11 +14,11 @@ router.get("/balance", authMiddleware, async (req, res) => {
   });
 });
 
-router.post("./transfer", authMiddleware, async (req, res) => {
+accountRouter.post("/transfer", authMiddleware, async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   const { amount, to } = req.body;
-  const account = await findOne({
+  const account = await Account.findOne({
     userId: req.userId,
   }).session();
   if (!account || account.balance < amount) {

@@ -2,18 +2,18 @@ import express from "express";
 import { signupSchema } from "../types.js";
 import { signinSchema } from "../types.js";
 import { updateSchema } from "../types.js";
-import { authMiddlware } from "../middleware.js";
-import { Account } from "../db";
-import { User } from "../db";
+import { authMiddleware } from "../middleware.js";
+import { Account } from "../db.js";
+import { User } from "../db.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const router = express.Router();
+export const userRouter = express.Router();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-router.post("/signup", async (req, res) => {
+userRouter.post("/signup", async (req, res) => {
   const payload = req.body;
   const { success } = signupSchema.safeParse(payload);
   if (!success) {
@@ -51,7 +51,7 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.post("/signin", async (req, res) => {
+userRouter.post("/signin", async (req, res) => {
   const payload = req.body;
 
   const { success } = signinSchema.safeParse(payload);
@@ -74,8 +74,8 @@ router.post("/signin", async (req, res) => {
   res.json({ message: "User successfully logged in", token });
 });
 
-router.put("/", authMiddlware, async (req, res) => {
-  const { success } = updateSchema.safeParse();
+userRouter.put("/", authMiddleware, async (req, res) => {
+  const { success } = updateSchema.safeParse(req.body);
 
   if (!success) {
     res.status(411).json({
@@ -89,7 +89,7 @@ router.put("/", authMiddlware, async (req, res) => {
   });
 });
 
-router.get("/bulk", async (req, res) => {
+userRouter.get("/bulk", async (req, res) => {
   const filter = req.query.filter || "";
   const users = await User.find({
     $or: [
