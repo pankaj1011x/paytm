@@ -15,6 +15,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 userRouter.post("/signup", async (req, res) => {
   const payload = req.body;
+  console.log(payload);
   const { success } = signupSchema.safeParse(payload);
   if (!success) {
     return res.status(411).json({
